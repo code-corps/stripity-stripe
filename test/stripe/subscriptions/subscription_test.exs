@@ -47,7 +47,11 @@ defmodule Stripe.SubscriptionTest do
 
   describe "update/2" do
     test "updates a subscription" do
-      params = %{metadata: %{foo: "bar"}}
+      params = %{
+        metadata: %{foo: "bar"},
+        items: [%{id: 1}, %{id: %Stripe.SubscriptionItem{id: 2}}]
+      }
+
       assert {:ok, subscription} = Stripe.Subscription.update("sub_123", params)
       assert_stripe_requested(:post, "/v1/subscriptions/#{subscription.id}")
     end

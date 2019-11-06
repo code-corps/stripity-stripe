@@ -155,6 +155,7 @@ defmodule Stripe.Subscription do
                optional(:items) => [
                  %{
                    :plan => Stripe.id() | Stripe.Plan.t(),
+                   optional(:id) => Stripe.id() | Stripe.SubscriptionItem.t(),
                    optional(:quantity) => non_neg_integer
                  }
                ],
@@ -170,7 +171,7 @@ defmodule Stripe.Subscription do
     |> put_endpoint(@plural_endpoint <> "/#{get_id!(id)}")
     |> put_method(:post)
     |> put_params(params)
-    |> cast_to_id([:coupon])
+    |> cast_to_id([:coupon, :items])
     |> make_request()
   end
 

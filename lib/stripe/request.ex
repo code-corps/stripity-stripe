@@ -215,8 +215,22 @@ defmodule Stripe.Request do
     params =
       Enum.reduce(to_cast, params, fn key, params ->
         case params[key] do
-          %{__struct__: _, id: id} -> put_in(params[key], id)
-          _ -> params
+          %{__struct__: _, id: id} ->
+            put_in(params[key], id)
+
+          list when is_list(list) ->
+            new_list =
+              Enum.map(list, fn %{id: id} = list_item ->
+                case id do
+                  %{__struct__: _, id: id} -> put_in(list_item.id, id)
+                  _ -> list_item
+                end
+              end)
+
+            put_in(params[key], new_list)
+
+          _ ->
+            params
         end
       end)
 
