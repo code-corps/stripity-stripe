@@ -292,14 +292,28 @@ defmodule Stripe.Charges do
 
   """
   def refund(id) do
-    refund id, Stripe.config_or_env_key
+    refund id, Stripe.config_or_env_key, %{}
   end
+
+  @doc """
+  Refunds a charge and reverses transfer to connected accounts.
+
+  Return a `{:ok, charge}` tuple.
+
+  ## Examples
+
+      {:ok, charge} = Stripe.Charges.refund_with_reversal("charge_id")
+  """
+  def refund_with_reversal(id) do
+    refund id, Stripe.config_or_env_key, %{reverse_transfer: true, refund_application_fee: true}
+  end
+
 
   @doc """
   Refund a charge. Accepts Stripe API key.
 
   Refunds a charge completely.
-  
+
   Note: use `refund_partial` if you just want to perform a partial refund.
 
   Returns a `{:ok, charge}` tuple.
@@ -309,10 +323,11 @@ defmodule Stripe.Charges do
       {:ok, charge} = Stripe.Charges.refund("charge_id", "my_key")
 
   """
-  def refund(id, key) do
-    Stripe.make_request_with_key(:post, "#{@endpoint}/#{id}/refunds", key)
+  def refund(id, key, params) do
+    Stripe.make_request_with_key(:post, "#{@endpoint}/#{id}/refunds", key, params)
     |> Stripe.Util.handle_stripe_response
   end
+
 
   @doc """
   Partially refund a charge.
