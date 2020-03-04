@@ -1,7 +1,5 @@
 defmodule Stripe.URI do
-  @moduledoc """
-  Stripe URI helpers to encode nested dictionaries as query_params.
-  """
+  @moduledoc false
 
   defmacro __using__(_) do
     quote do
@@ -15,52 +13,22 @@ defmodule Stripe.URI do
 
   @doc """
   Takes a map and turns it into proper query values.
-
   ## Example
   card_data = %{
-    card: %{
-      number: 424242424242,
-      exp_year: 2014
-    }
+    cards: [
+      %{
+        number: 424242424242,
+        exp_year: 2014
+      },
+      %{
+        number: 424242424242,
+        exp_year: 2017
+      }
+    ]
   }
-
-  Stripe.URI.encode_query(card) # card[number]=424242424242&card[exp_year]=2014
+  Stripe.URI.encode_query(card_data) # cards[0][number]=424242424242&cards[0][exp_year]=2014&cards[1][number]=424242424242&cards[1][exp_year]=2017
   """
-  def encode_query(list) do
-    Enum.map_join list, "&", fn x ->
-      pair(x)
-    end
-  end
-
-  defp pair({key, value}) do
-    cond do
-      Enumerable.impl_for(value) ->
-        pair(to_string(key), [], value)
-      true ->
-        param_name = key |> to_string |> URI.encode_www_form
-        param_value = value |> to_string |> URI.encode_www_form
-
-        "#{param_name}=#{param_value}"
-    end
-  end
-
-  defp pair(root, parents, values) do
-    Enum.map_join values, "&", fn {key, value} ->
-      cond do
-        Enumerable.impl_for(value) ->
-          pair(root, parents ++ [key], value)
-        true ->
-          build_key(root, parents ++ [key]) <> URI.encode_www_form(to_string(value))
-      end
-    end
-  end
-
-  defp build_key(root, parents) do
-    path = Enum.map_join parents, "", fn x ->
-      param = x |> to_string |> URI.encode_www_form
-      "[#{param}]"
-    end
-
-    "#{root}#{path}="
+  def encode_query(map) do
+    map |> UriQuery.params() |> URI.encode_query()
   end
 end
