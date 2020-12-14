@@ -34,8 +34,8 @@ defmodule Stripe.AccountLink do
   @spec create(params, Stripe.options()) :: {:ok, t} | {:error, Stripe.Error.t()}
         when params: %{
                :account => Stripe.Account.t() | Stripe.id(),
-               :failure_url => String.t(),
-               :success_url => String.t(),
+               :refresh_url => String.t(),
+               :return_url => String.t(),
                :type => String.t(),
                optional(:collect) => String.t()
              }
