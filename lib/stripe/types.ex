@@ -43,6 +43,9 @@ defmodule Stripe.Types do
   @type shipping :: %{
           address: Stripe.Types.address(),
           carrier: String.t() | nil,
+          company: String.t() | nil,
+          currency: String.t() | nil,
+          email: String.t() | nil,
           eta: Stripe.timestamp() | nil,
           name: String.t(),
           phone: String.t() | nil,

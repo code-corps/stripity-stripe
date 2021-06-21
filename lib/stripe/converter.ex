@@ -71,6 +71,8 @@ defmodule Stripe.Converter do
     tax_id
     topup
     terminal.connection_token
+    terminal.hardware_order
+    terminal.hardware_sku
     terminal.location
     terminal.reader
     transfer
