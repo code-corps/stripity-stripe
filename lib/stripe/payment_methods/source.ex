@@ -229,7 +229,8 @@ defmodule Stripe.Source do
     :status,
     :three_d_secure,
     :type,
-    :usage
+    :usage,
+    :klarna
   ]
 
   @plural_endpoint "sources"
