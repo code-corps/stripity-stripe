@@ -8,6 +8,7 @@ otp_release:
   - 19.3
   - 20.1
   - 21.1
+  - 22.1
 matrix:
   exclude:
     - otp_release: 19.3
