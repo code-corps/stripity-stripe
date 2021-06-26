@@ -2,11 +2,32 @@ defmodule Stripe.ExternalAccountTest do
   use Stripe.StripeCase, async: true
 
   describe "create/2" do
-    test "creates a bank account for an account" do
+    test "creates a bank account for an account with token" do
       {:ok, _} =
         Stripe.ExternalAccount.create(%{account: "acct_123", token: "tok_stripetestbank"})
 
-      assert_stripe_requested(:post, "/v1/accounts/acct_123/external_accounts")
+      assert_stripe_requested(:post, "/v1/accounts/acct_123/external_accounts", body: %{
+        external_account: "tok_stripetestbank"
+      })
+    end
+
+    test "creates a bank account for an account with object" do
+      {:ok, _} =
+        Stripe.ExternalAccount.create(%{account: "acct_123", external_account: %{
+          object: "bank_account",
+          account_number: "1234567890",
+          currency: "USD",
+          country: "US"
+        }})
+
+      assert_stripe_requested(:post, "/v1/accounts/acct_123/external_accounts", body: %{
+        external_account: %{
+          object: "bank_account",
+          account_number: "1234567890",
+          currency: "USD",
+          country: "US"
+        }
+      })
     end
 
     test "creates a card for an account" do

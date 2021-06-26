@@ -22,17 +22,31 @@ defmodule Stripe.ExternalAccount do
 
   @type create_params :: %{
           default_for_currency: boolean | nil,
-          external_account: String.t(),
+          external_account: String.t() | Stripe.BankAccount.t(),
           metadata: Stripe.Types.metadata() | nil
         }
 
   @doc """
   Create an external account.
-
-  Only accepts a `token` and not a hash of values.
   """
   @spec create(map, Keyword.t()) :: {:ok, t} | {:error, Stripe.Error.t()}
-  def create(%{account: _, token: token} = params, opts \\ []) do
+  def create(params, opts \\ [])
+  def create(%{account: _, external_account: external_account} = params, opts) do
+    endpoint = params |> accounts_plural_endpoint()
+
+    updated_params =
+      params
+      |> Map.put(:external_account, external_account)
+      |> Map.delete(:account)
+
+    new_request(opts)
+    |> put_endpoint(endpoint)
+    |> put_params(updated_params)
+    |> put_method(:post)
+    |> make_request()
+  end
+
+  def create(%{account: _, token: token} = params, opts) do
     endpoint = params |> accounts_plural_endpoint()
 
     updated_params =
