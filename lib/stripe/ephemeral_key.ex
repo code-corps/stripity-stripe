@@ -27,7 +27,8 @@ defmodule Stripe.EphemeralKey do
     :created,
     :expires,
     :secret,
-    :associated_objects
+    :associated_objects,
+    :livemode
   ]
 
   @type t :: %__MODULE__{}
