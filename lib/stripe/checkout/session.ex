@@ -106,6 +106,7 @@ defmodule Stripe.Session do
 
   @type t :: %__MODULE__{
           id: Stripe.id(),
+          url: String.t(),
           object: String.t(),
           billing_address_collection: String.t(),
           cancel_url: boolean(),
@@ -134,6 +135,7 @@ defmodule Stripe.Session do
 
   defstruct [
     :id,
+    :url,
     :object,
     :billing_address_collection,
     :cancel_url,
